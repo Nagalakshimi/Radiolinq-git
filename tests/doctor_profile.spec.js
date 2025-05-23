@@ -1,4 +1,5 @@
 const { test, expect } = require('playwright/test');
+const { chromium } = require('@playwright/test');
 
 //const { chromium } = require('playwright');
 
@@ -18,6 +19,10 @@ await page.goto('https://staging.radiolinq.com/');
 await page.waitForTimeout(1000);
 
 /*
+//Clicking on Submit button without inputs
+await page.click('//button[@type ="submit"]');
+await page.waitForTimeout(2000);
+
 //Login using wrong email id 
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
 await page.waitForTimeout(1000);
@@ -105,7 +110,7 @@ await page.waitForTimeout(2000);
 //Checking the signature button is on or off
 const toggle = await page.locator('//button[@role="switch"]');
  const toggle_check = await toggle.getAttribute('aria-checked');
- console.log("toggle button =" + toggle_check);
+ console.log("toggle button = " +toggle_check);
 
  if(toggle_check === 'true')
  {
