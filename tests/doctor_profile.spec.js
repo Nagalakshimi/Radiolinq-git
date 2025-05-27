@@ -18,20 +18,41 @@ test('Login Test', async ({ page }) => {
 await page.goto('https://staging.radiolinq.com/');
 await page.waitForTimeout(1000);
 
-/*
+
 //Clicking on Submit button without inputs
 await page.click('//button[@type ="submit"]');
 await page.waitForTimeout(2000);
+//Email id required
+ const errormessage = await page.locator('.input__error.email__error');
+ await expect(errormessage).toBeVisible();
+  const text = await errormessage.textContent();
+  console.log("Empty email textbox = "+text);
+//Password required
+const errormessage1 = page.locator('.input__error.password__error');
+await expect(errormessage1).toBeVisible();
+const text1 = await errormessage1.textContent();
+console.log("Empty password textbox = "+text1);
+await page.waitForTimeout(2000);
 
-//Login using wrong email id 
+//Login using invalid email id 
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
 await page.waitForTimeout(1000);
 await page.locator('//input[@placeholder ="Enter password"]').fill('password');
 await page.waitForTimeout(1000);
 await page.click('//button[@type ="submit"]');
+await page.waitForTimeout(2000);
 await expect(page.getByText('Invalid email id')).toBeVisible();
 await page.waitForTimeout(2000);
-
+/*
+//Wrong email id
+const errormessage2 = page.locator('//div[@class="ant-message-custom-content ant-message-error"]');
+await page.waitForTimeout(70000);
+await expect(errormessage2).toBeVisible();
+const text2 = await errormessage2.textContent();
+console.log("Entering wrong email_id = "+text2); 
+await page.waitForTimeout(2000);
+*/
+/*
 //Login using invalid password
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor1@gmail.com');
 await page.waitForTimeout(1000);
