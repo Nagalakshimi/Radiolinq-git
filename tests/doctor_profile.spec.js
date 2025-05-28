@@ -156,13 +156,10 @@ await page.waitForTimeout(2000);
 
 //Clicking the update button
 await page.click('text="Update Profile"');
+await page.waitForTimeout(2000);
 
-
-
-/*//Logout
+//Logout
 await page.click('(//button[@class="ant-btn ant-btn-primary"])[2]');
-await page.waitForTimeout(2000);*/
-
-
-//await browser.close();
+await page.waitForTimeout(2000);
+await browser.close();
 });
