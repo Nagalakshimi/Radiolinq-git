@@ -38,7 +38,6 @@ await page.waitForTimeout(2000);
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
 await page.locator('//input[@placeholder ="Enter password"]').fill('password');
 await page.click('//button[@type ="submit"]');
-await page.waitForTimeout(2000);
 await expect(page.getByText('Invalid email id')).toBeVisible();
 await page.waitForTimeout(2000);
 /*
