@@ -128,7 +128,7 @@ console.log('Scantype_dropdown Element Found: ',await find_scantype.count());
 
 //Click it
 await find_scantype.click();
-await page.waitForTimeout(6000);
+await page.waitForTimeout(3000);
 
 //Check the dropdown is visible
 const dropdownElement = await page.locator('//div[contains(@class, "ant-select-dropdown")]');
