@@ -34,6 +34,11 @@ await page.locator('//span[@class="anticon anticon-diff ant-menu-item-icon"]').c
     await page.locator('(//div[@class="ant-select-item-option-content"])[3]').click();
     await page.waitForTimeout(2000);
 
+    //Choose 10/page
+    await pagination_dropdown.click();
+    await page.locator('(//div[@class="ant-select-item-option-content"])[1]').click();
+    await page.waitForTimeout(2000);
+
     //Click next pagination button
     await page.locator('(//button[@class="ant-pagination-item-link"])[2]').click();
     
@@ -86,6 +91,7 @@ await page.waitForTimeout(2000);
     await page.locator('(//button[@class="ant-btn ant-btn-primary ant-btn-icon-only"])[2]').click({force: true});
      const close = await page.locator('//span[@class="anticon anticon-close ant-modal-close-icon"]'); 
      await expect(close).toBeVisible();
+     await close.scrollIntoViewIfNeeded(); //for firefox
      await close.click({force: true});//close
     await page.waitForTimeout(2000);
 
