@@ -104,7 +104,7 @@ await page.waitForTimeout(2000);
     */
 
 // Click Add Template button
-await page.locator('//button[contains(@class, "float-right")]').click();
+await page.locator('//button[@class="ant-btn ant-btn-primary float-right"]').click();
 
 //For debugging
 //check the scantype_dropdown locators is present or not
@@ -119,7 +119,7 @@ await page.locator('//button[contains(@class, "float-right")]').click();
  }
 
 // Fill template name
-await page.locator('input[placeholder="Enter name"]').fill('Playwright Automation testing');
+await page.locator('input[placeholder="Enter name"]').fill('Playwright Automation Testing in Add template');
 await page.waitForTimeout(2000);
 
 //check the count of scantype_dropdown locators
@@ -139,40 +139,29 @@ await expect(dropdownElement).toBeVisible();
 
   //Fill the textbox(paragraph)
   await page.locator('//div[@role="textbox"]').fill("Playwright automation testing in textbox");
-  
+
+  //Click the show more items button
+  await page.locator('(//button[@class="ck ck-button ck-off ck-dropdown__button"])[3]').click();
+
+/*
+//To upload the file
+     // Step 1: Prepare to catch file chooser AND click the button at the same time
+    const [fileChooser1] = await Promise.all([
+      page.waitForEvent('filechooser'),
+      // Step 2: click triggers file chooser
+      page.click('//span[@class="ck-file-dialog-button"]') 
+]);
+     // Step 3: Set the file to upload
+    await fileChooser.setFiles('C:\\Users\\nagalakshimi\\Downloads\\xray3.jfif');
+    await page.waitForTimeout(2000);
+  */
+
+await page.locator('//span[@class="ck-file-dialog-button"]/input[@type="file"]').setInputFiles('C:\\Users\\nagalakshimi\\Downloads\\xray3.jfif');
+await page.waitForTimeout(2000);
+    
   //Clicking on the add button
   await page.locator('(//button[@type="submit"])[2]').click();
   await page.waitForTimeout(2000);
   
-
-
-
-
-
-
-/*
-//Choose the pagination dropdown
-    const pagination_dropdown = await page.locator('//span[@class="ant-select-selection-item"]');
-    await expect(pagination_dropdown).toBeVisible();
-    await pagination_dropdown.click();
-
-    //Choose 20/page
-    await page.locator('(//div[@class="ant-select-item-option-content"])[2]').click();
-    await page.waitForTimeout(2000);
-
-    //Choose 50/page
-    await pagination_dropdown.click();
-    await page.locator('(//div[@class="ant-select-item-option-content"])[3]').click();
-    await page.waitForTimeout(2000);
-
-    //Click next pagination button
-    await page.locator('(//button[@class="ant-pagination-item-link"])[2]').click();
-    
-    //Click next pagination button
-    await page.locator('//li[@class="ant-pagination-item ant-pagination-item-3"]').click();
    
-  //Click previous pagination button
-    await page.locator('(//button[@class="ant-pagination-item-link"])[1]').click();
-    await page.waitForTimeout(2000);
-*/
 });
