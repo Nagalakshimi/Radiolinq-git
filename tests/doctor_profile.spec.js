@@ -36,9 +36,7 @@ await page.waitForTimeout(2000);
 
 //Login using invalid email id 
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
-await page.waitForTimeout(1000);
 await page.locator('//input[@placeholder ="Enter password"]').fill('password');
-await page.waitForTimeout(1000);
 await page.click('//button[@type ="submit"]');
 await page.waitForTimeout(2000);
 await expect(page.getByText('Invalid email id')).toBeVisible();
@@ -161,5 +159,4 @@ await page.waitForTimeout(2000);
 //Logout
 await page.click('(//button[@class="ant-btn ant-btn-primary"])[2]');
 await page.waitForTimeout(2000);
-await browser.close();
 });
