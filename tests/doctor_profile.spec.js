@@ -3,80 +3,51 @@ const { chromium } = require('@playwright/test');
 
 //const { chromium } = require('playwright');
 
-/*
-(async()=>{
-const browser = await chromium.launch({headless:false}); //if it is true test run without UI
-const context = await browser.newContext();  //opening a new window and maximize it
-const page = await context.newPage();
-await page.goto('https://staging.radiolinq.com/');
-});
-*/
-
-test('Login Test', async ({ page }) => {
+test('Login in to the application and check the title', async ({ page }) => {
 
 //Login into the URL
 await page.goto('https://staging.radiolinq.com/');
-await page.waitForTimeout(1000);
+await expect(page).toHaveTitle("RadiolinQ - Imaging Anytime Anywhere");
 
-
-//Clicking on Submit button without inputs
+//Clicking on Submit button without inputs and check the error message is shown
 await page.click('//button[@type ="submit"]');
-await page.waitForTimeout(2000);
-//Email id required
- const errormessage = await page.locator('.input__error.email__error');
- await expect(errormessage).toBeVisible();
-  const text = await errormessage.textContent();
-  console.log("Empty email textbox = "+text);
-//Password required
-const errormessage1 = page.locator('.input__error.password__error');
-await expect(errormessage1).toBeVisible();
-const text1 = await errormessage1.textContent();
-console.log("Empty password textbox = "+text1);
-await page.waitForTimeout(2000);
+//Assert error messages should appear
+await expect(page.getByText('E-mail is required')).toBeVisible();
+await expect(page.getByText('Password is required')).toBeVisible();
 
-//Login using invalid email id 
-await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
-await page.locator('//input[@placeholder ="Enter password"]').fill('password');
+//Login using invalid email id and check it show an error message
+await page.locator('//input[@name="email"]').fill('doctor123@gmail.com');
+await page.locator('//input[@name="password"]').fill('Doc@2309');
 await page.click('//button[@type ="submit"]');
 await expect(page.getByText('Invalid email id')).toBeVisible();
-await page.waitForTimeout(2000);
-/*
-//Wrong email id
-const errormessage2 = page.locator('//div[@class="ant-message-custom-content ant-message-error"]');
-await page.waitForTimeout(70000);
-await expect(errormessage2).toBeVisible();
-const text2 = await errormessage2.textContent();
-console.log("Entering wrong email_id = "+text2); 
-await page.waitForTimeout(2000);
-*/
-/*
-//Login using invalid password
-await page.locator('//input[@placeholder ="Enter email"]').fill('doctor1@gmail.com');
-await page.waitForTimeout(1000);
-await page.locator('//input[@placeholder ="Enter password"]').fill('password123');
-await page.waitForTimeout(2000);
-await page.click('//button[@type ="submit"]');
-//await expect(page.getByText('Login failed')).toBeVisible();
-await page.waitForTimeout(2000);
 
-//Login with invalid email and password
-await page.locator('//input[@placeholder ="Enter email"]').fill('doctor123@gmail.com');
-await page.waitForTimeout(1000);
-await page.locator('//input[@placeholder ="Enter password"]').fill('password123');
-await page.waitForTimeout(2000);
+//Login using invalid password and check it show an error message
+await page.locator('//input[@name="email"]').fill('doctor1@gmail.com');
+await page.locator('//input[@name="password"]').fill('password123');
+await page.click('//button[@type ="submit"]');
+await expect(page.locator('.login-form')).toBeVisible();
+});
+
+//Login with invalid email and password and check it show as error
+test('both invalid email and password', async({page}) => {
+  await page.goto('https://staging.radiolinq.com/');
+await page.locator('//input[@name="email"]').fill('doctor123@gmail.com');
+await page.locator('//input[@name="password"]').fill('password123');
 await page.click('//button[@type ="submit"]');
 await expect(page.getByText('Invalid email id')).toBeVisible();
-await page.waitForTimeout(2000);
-*/
 
 // Login with valid credentials
 await page.locator('//input[@placeholder ="Enter email"]').fill('doctor1@gmail.com');
-await page.waitForTimeout(1000);
-await page.locator('//input[@placeholder ="Enter password"]').fill('password');
-await page.waitForTimeout(1000);
+await page.locator('//input[@placeholder ="Enter password"]').fill('Doc@2309');
 await page.click('//button[@type ="submit"]');
-await page.waitForTimeout(2000);
+await expect(page.getByText('Cases')).toBeVisible();
 
+});
+
+
+
+
+/*
 //Clicking on Hard refresh button
 await page.click('(//button[@class="ant-btn ant-btn-primary"])[1]');
 await page.waitForTimeout(2000);
@@ -158,4 +129,4 @@ await page.waitForTimeout(2000);
 //Logout
 await page.click('(//button[@class="ant-btn ant-btn-primary"])[2]');
 await page.waitForTimeout(2000);
-});
+*/
