@@ -36,12 +36,12 @@ test('case filter',async()=>{
         await expect(filter_option.nth(i)).toBeVisible();
     }
 
-     //Click the 1st filter - Patient_name and check the textbox is editable
-     const Patient_namefilter = await (filter_option.nth(0)).locator('//input[@name="patientId"]');
+     //Click the 2nd filter - Patient_name and check the textbox is editable
+     const Patient_namefilter = await (filter_option.nth(1)).locator('//input[@name="patientName"]');
      await Patient_namefilter.click();
      await expect(Patient_namefilter).toBeEditable();
 
-     //Click the from date and choose the date
+     //Click the 9th filter - from date and choose the date
       const fromdate = await (filter_option.nth(8)).locator('//input[@name="fromDate"]');
       await fromdate.click();
       const monthlocator = page.locator('//div[@class="ant-picker-date-panel"]//div[@class="ant-picker-header-view"]//button[contains(text(),"Jun")]');
@@ -50,7 +50,7 @@ test('case filter',async()=>{
       //Click previous button to go to may month
        const choosemonth = await page.locator('.ant-picker-header-prev-btn');
        await choosemonth.click();
-       const monthlocator1= page.locator('//div[@class="ant-picker-date-panel"]//div[@class="ant-picker-header-view"]//button[contains(text(),"May")]');
+       const monthlocator1 = page.locator('//div[@class="ant-picker-date-panel"]//div[@class="ant-picker-header-view"]//button[contains(text(),"May")]');
        await expect(monthlocator1).toBeVisible();
 
        //Choose the date(16-may-2025)
