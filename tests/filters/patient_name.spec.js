@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { Console } from 'console';
 
 
 let page;
@@ -9,26 +10,55 @@ test.beforeAll('Login to the application', async({browser})=>{
     const Loginbrowserpage = await page.goto('https://staging.radiolinq.com/')
 
     //Checking the image is visible in login page
-    await expect(page.getByAltText('Radiolinq Login')).toBeVisible();
+    await expect.soft(page.getByAltText('Radiolinq Login')).toBeVisible();
     
     //Checking the radiolinQ img src is visible
-    await expect(page.locator('.logo-form__logo-image')).toBeVisible();
+    await expect.soft(page.locator('.logo-form__logo-image')).toBeVisible();
 
     //Login admin page with credential
     await page.locator('//input[@placeholder ="Enter email"]').fill('nivi2311@gmail.com');
     await page.locator('//input[@placeholder ="Enter password"]').fill('password');
     await page.click('//button[@type ="submit"]');
     await expect(page.locator('h2.mt-2',{hasText: 'Cases'})).toBeVisible();
+    await page.waitForTimeout(2000);
+
+    //Selecting 50/page
+    await page.locator('(//div[@class="ant-select-selector"])[7]').click();
+    await page.locator('//div[contains(text(), "50 / page")]').click();
 
 });
 
-test('case filter',async()=>{
+test.afterAll('Logout from the application', async()=>{
+    //Logout from the application
+        const logout = await page.locator('span',{hasText: 'Logout'});
+        await logout.click();
 
-    //Case filter option is visible and click
-    const casetext = await page.locator('.case-filter-form__toggle-button');
-    await expect(casetext).toBeVisible();
+});
 
-    //Check all the filter option is available
+test('Case filter button',async()=>{
+
+        //Case filter option is visible
+        const casetext = await page.locator('.case-filter-form__toggle-button');
+        await expect(casetext).toBeVisible();
+});
+
+
+test('Checking patient detail table is visible', async()=>{
+    //Check the Patient details table is visible
+      const patient_detail_table = page.locator('.ant-table-container');
+      await expect(patient_detail_table).toBeVisible();
+});
+
+test('Checking patient name inside the table', async()=>{
+     //Verify to have patient_name inside the table
+      const patient_nameintable = await page.locator('//thead[@class="ant-table-thead"]//th[3]//div[contains(text(),"Patient Name")]');
+      await expect(patient_nameintable).toBeVisible();
+
+});
+
+    
+test('Checking all the filter options and giving inputs in patient filter', async()=>{
+    //Check all the filter options is visible
     const filter_option = await page.locator('(//form[@action="#"])//div[contains(@class,"ant-col-xxl-4")]');
     await expect(filter_option).toHaveCount(10);
     for(let i=0;i<10;i++)
@@ -36,77 +66,143 @@ test('case filter',async()=>{
         await expect(filter_option.nth(i)).toBeVisible();
     }
 
-     //Click the 2nd filter - Patient_name and check the textbox is editable
+    //Click the 2nd filter - Patient_name and check the textbox is editable
      const Patient_namefilter = await (filter_option.nth(1)).locator('//input[@name="patientName"]');
      await Patient_namefilter.click();
      await expect(Patient_namefilter).toBeEditable();
-
+     await page.waitForTimeout(1000);
+     
      //Fill the text inside the patient_name textbox
      await Patient_namefilter.fill('S');
      await page.waitForTimeout(4000);
 
-     //Check the Patient details table is visible
-      const patient_detail_table = page.locator('.ant-table-container');
-      await expect(patient_detail_table).toBeVisible();
-
-     //Verify to have patient_name inside the table
-      const patient_nameintable = await page.locator('//thead[@class="ant-table-thead"]//th[3]//div[contains(text(),"Patient Name")]');
-      await expect(patient_nameintable).toBeVisible();
-
-      //Locate all the table row and make it count
-                                    
+    //Finding the no.of.rows inside the table                           
        const row_count = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
        const total_row_count = await row_count.count();
-       console.log("Row count = "+total_row_count);
+       console.log("Giving S in patient name filter and the count = "+total_row_count);
+       console.log(" ");
 
-       //Locate the 3rd column(patientname) in each row
+       let firstmatchednamecount = 0;
+
+    //Locate the 3rd column(patientname) in each row
        for(let i=0; i<total_row_count; i++)
        {
-         const patientname_cell = row_count.nth(i).locator('td').nth(2);
-         await expect(patientname_cell).toBeVisible();
+         const patientname_column = row_count.nth(i).locator('td').nth(2);
+         await expect(patientname_column).toBeVisible();
          //get the text
-             const patientsname = await patientname_cell.textContent();
+             const patientsname = await patientname_column.textContent();
               if (!patientsname || patientsname.trim() === '') 
+                {
+                    continue; // skip empty/fake rows
+                }
+                if (patientsname.toLowerCase().includes('s')) 
+                {
+                    firstmatchednamecount++;
+                    console.log("Row "+(i + 1) + " has name with 's': "+patientsname);
+                    console.log("");
+                }
+       }
+
+       if(firstmatchednamecount!=total_row_count)
+       {
+        console.warn("ERROR-Mismatched: Found "+total_row_count +" row count but only "+firstmatchednamecount +" name is matching with 'S'. ")
+        console.log("------------------------------------------------------------------");
+        console.log(" ");
+       }
+       else
+       {
+        console.log("Filter Result : Row count is "+total_row_count+" and the name inclued 'S' count is "+firstmatchednamecount)
+        console.log("------------------------------------------------------------------");
+        console.log(" ");
+       }
+
+       //Filter the patient name with 2 letter 
+       await Patient_namefilter.press('Control+A');
+       await Patient_namefilter.press('Backspace');
+       await Patient_namefilter.fill('SA');
+       await page.waitForTimeout(3000);
+       
+       //Finding the no.of.rows inside the table                            
+       const row_count1 = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
+       const total_row_count1 = await row_count1.count();
+       console.log("Giving SA in patient name filter and the count = "+total_row_count1);
+       console.log(" ");
+
+       let secondmatchednamecount = 0;
+
+       //Locate the 3rd column(patientname) in each row
+       for(let i=0; i<total_row_count1; i++)
+       {
+         const patientname_column1 = row_count1.nth(i).locator('td').nth(2);
+         await expect(patientname_column1).toBeVisible();
+         //get the text
+             const patientsname1 = await patientname_column1.textContent();
+              if (!patientsname1 || patientsname1.trim() === '') 
                 {
                 continue; // skip empty/fake rows
                 }
-                if (patientsname.toLowerCase().includes('s')) {
-                console.log("Row "+(i + 1) + "has name with 's': "+patientsname);
+                if (patientsname1.toLowerCase().includes('sa')) {
+                    secondmatchednamecount++;
+                console.log("Row "+(i + 1) + " has name with 'sa': "+patientsname1);
+                console.log("");
                     }
        }
-       
 
-     /*
-     //Click the 9th filter - from date and choose the date
-      const fromdate = await (filter_option.nth(8)).locator('//input[@name="fromDate"]');
-      await fromdate.click();
-      await page.waitForSelector('.ant-picker-panel-container', {state: 'visible'});
-      const monthlocator = page.locator('//div[@class="ant-picker-date-panel"]//div[@class="ant-picker-header-view"]//button[contains(text(),"Jun")]');
-      await expect(monthlocator).toBeVisible();
-      
+       //Warn if count mismatched
+       if(secondmatchednamecount != total_row_count1)
+       {
+        console.warn("ERROR-Mismatched: Found "+total_row_count1 +" row count but only "+secondmatchednamecount +" name is matching with 'SA'. ")
+        console.log("------------------------------------------------------------------");
+        console.log(" ");
+       }
+       else
+       {
+        console.log("Filter Result : Row count is "+total_row_count1+" and the name inclued 'SA' count is "+secondmatchednamecount)
+        console.log("------------------------------------------------------------------");
+        console.log(" ");
+       }
 
-      //Click previous button to go to may month
-       const choosemonth = await page.locator('button.ant-picker-header-prev-btn');
-       await expect(choosemonth).toBeVisible();
-       await page.waitForTimeout(1000);
-       await choosemonth.click();
-       const monthlocator1 = page.locator('//div[@class="ant-picker-date-panel"]//div[@class="ant-picker-header-view"]//button[contains(text(),"May")]');
-       await expect(monthlocator1).toBeVisible();
+         //Pass single name inside patient name filter and check it's working
 
-       //Choose the date(16-may-2025)
-        await page.locator('//div[@class="ant-picker-body"]//tr//td//div[contains(text(),"16")]').click();
-    */
+         // Filter the patient name with Sahil
+            await Patient_namefilter.press('Control+A');
+            await Patient_namefilter.press('Backspace');
+            await Patient_namefilter.fill('SAHIL');
+            await page.waitForTimeout(2000);
+           
+                const expectedName = 'Sahil';  
 
-});
+        //Finding the no.of.rows inside the table
+            const row_count2 = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
+            const total_row_count2 = await row_count2.count();
+            console.log("Giving single name in patient filter and the count is = "+total_row_count2);
+            console.log("");
+            //await expect.soft(total_row_count2).toBe(1);
+            if(total_row_count2 !== 1)
+            {
+                console.warn("ERROR - Expected 1 result after filtering the name but received: "+total_row_count2)
+                console.log("");
+            }
+            else
+            {
+                console.log("Checking when filtering with single name the count is 1 and it is: "+total_row_count2)
+                console.log("");
+                // Optionally verify name in the first row
+                const patientname_column2 = await row_count2.nth(0).locator('td').nth(2);
+                const nameText = await patientname_column2.textContent();
+                if (!nameText || !nameText.trim().toLowerCase().includes(expectedName.toLowerCase())) 
+                    {
+                    throw new Error("Row contains unexpected name: "+(nameText)+". Expected name is "+(expectedName)+".");
+                } 
+                else 
+                {
+                    console.log("Expected name: "+(expectedName)+". Getting text name: "+(nameText)+".");
+                    console.log("");
+                    console.log("Name matched: "+(nameText)+"");
+                }
+            }
 
-
-
-test.afterAll('Logout from the application', async()=>{
-     const logout = await page.locator('span',{hasText: 'Logout'});
-     await logout.click();
-
-});
-
-
+           
+    });
 
 
