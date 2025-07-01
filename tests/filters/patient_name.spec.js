@@ -1,38 +1,32 @@
 import { test, expect } from '@playwright/test';
 import { Console } from 'console';
+import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../login.helper';
 
 
 let page;
+test.beforeAll('Login using URL', async({browser})=>{
+    page = await browser.newPage();
+    //calling the url function
+    await url(page);
 
-test.beforeAll('Login to the application', async({browser})=>{
-     page = await browser.newPage();
-     //Login to the page
-    const Loginbrowserpage = await page.goto('https://staging.radiolinq.com/')
+    //Calling invaildlogin function
+    await invaildlogin(page);
 
-    //Checking the image is visible in login page
-    await expect.soft(page.getByAltText('Radiolinq Login')).toBeVisible();
-    
-    //Checking the radiolinQ img src is visible
-    await expect.soft(page.locator('.logo-form__logo-image')).toBeVisible();
+    //Calling valid function
+    await vaildlogin(page);
 
-    //Login admin page with credential
-    await page.locator('//input[@placeholder ="Enter email"]').fill('nivi2311@gmail.com');
-    await page.locator('//input[@placeholder ="Enter password"]').fill('password');
-    await page.click('//button[@type ="submit"]');
-    await expect(page.locator('h2.mt-2',{hasText: 'Cases'})).toBeVisible();
-    await page.waitForTimeout(2000);
+   //Checking the cases text is visible inside the admin dashboard
+    await checking_ifsuccessfully_loginintothedashbaord(page);
 
     //Selecting 50/page
     await page.locator('(//div[@class="ant-select-selector"])[7]').click();
     await page.locator('//div[contains(text(), "50 / page")]').click();
 
-});
+});   
 
 test.afterAll('Logout from the application', async()=>{
-    //Logout from the application
-        const logout = await page.locator('span',{hasText: 'Logout'});
-        await logout.click();
-
+    //calling the logout function
+    await logout(page);
 });
 
 test('Case filter button',async()=>{
@@ -57,7 +51,7 @@ test('Checking patient name inside the table', async()=>{
 });
 
     
-test('Checking all the filter options and giving inputs in patient filter', async()=>{
+test('Checking all the filter options and giving inputs in patient_name filter', async()=>{
     //Check all the filter options is visible
     const filter_option = await page.locator('(//form[@action="#"])//div[contains(@class,"ant-col-xxl-4")]');
     await expect(filter_option).toHaveCount(10);
