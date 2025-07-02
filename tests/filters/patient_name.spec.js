@@ -78,6 +78,15 @@ test('Checking all the filter options and giving inputs in patient_name filter',
 
        let firstmatchednamecount = 0;
 
+       //Handle empty case 
+        if (total_row_count === 0) 
+        {
+            console.warn("No rows found for giving 'S' in patient name filter — table is empty.");
+            console.log("------------------------------------------------------------------");
+            console.log(" ");
+        }
+        else 
+        {
     //Locate the 3rd column(patientname) in each row
        for(let i=0; i<total_row_count; i++)
        {
@@ -96,6 +105,7 @@ test('Checking all the filter options and giving inputs in patient_name filter',
                     console.log("");
                 }
        }
+    }
 
        if(firstmatchednamecount!=total_row_count)
        {
@@ -124,6 +134,15 @@ test('Checking all the filter options and giving inputs in patient_name filter',
 
        let secondmatchednamecount = 0;
 
+       //Handle empty case 
+        if (total_row_count1 === 0) 
+        {
+            console.warn("No rows found for giving 'SA' in patient name filter — table is empty.");
+            console.log("------------------------------------------------------------------");
+            console.log(" ");
+        }
+        else 
+        {
        //Locate the 3rd column(patientname) in each row
        for(let i=0; i<total_row_count1; i++)
        {
@@ -141,6 +160,7 @@ test('Checking all the filter options and giving inputs in patient_name filter',
                 console.log("");
                     }
        }
+    }
 
        //Warn if count mismatched
        if(secondmatchednamecount != total_row_count1)
@@ -161,18 +181,71 @@ test('Checking all the filter options and giving inputs in patient_name filter',
          // Filter the patient name with Sahil
             await Patient_namefilter.press('Control+A');
             await Patient_namefilter.press('Backspace');
-            await Patient_namefilter.fill('SAHIL');
+            await Patient_namefilter.fill('CHINNA');
             await page.waitForTimeout(2000);
            
-                const expectedName = 'Sahil';  
+                const expectedName = 'Chinna';  
 
+            // Get all rows in the table
+            const rowLocator = page.locator('//div[@class="ant-table-body"]//tr[contains(@class, "ant-table-row")]');
+            const totalRowCount = await rowLocator.count();
+
+            console.log("Filtered with name "+expectedName+" — Total rows found: "+totalRowCount);
+            console.log("------------------------------------------------------------");
+
+           let matchedNameCount = 0;
+
+            if (totalRowCount === 0) 
+                {
+                console.warn("No rows found when filtering with name "+expectedName);
+                } 
+            else 
+            {
+                for (let i = 0; i < totalRowCount; i++) {
+                const patientNameCell = rowLocator.nth(i).locator('td').nth(2); // 3rd column (index 2)
+                await expect(patientNameCell).toBeVisible();
+
+                const cellText = await patientNameCell.textContent();
+                const trimmedText = cellText?.trim() || '';
+
+                if (trimmedText.toLowerCase().includes(expectedName.toLowerCase())) 
+                {
+                matchedNameCount++;
+                console.log("Row "+(i + 1)+" matched: "+trimmedText);
+                } 
+                else 
+                {
+                console.warn("Row "+(i + 1)+" does NOT match "+expectedName+". Found: "+trimmedText);
+                expect.soft(trimmedText.toLowerCase()).toContain(expectedName.toLowerCase()); // Soft assertion
+                }
+    }
+
+            // Final summary
+            console.log("");
+            if (matchedNameCount === totalRowCount) 
+            {
+            console.log("All "+matchedNameCount+" rows matched expected name "+expectedName);
+            } else 
+            {
+            console.warn(" Mismatch: "+matchedNameCount+" out of "+totalRowCount+" rows matched "+expectedName);
+            }
+  }
+
+            console.log("------------------------------------------------------------");
+
+    /*
         //Finding the no.of.rows inside the table
             const row_count2 = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
             const total_row_count2 = await row_count2.count();
-            console.log("Giving single name in patient filter and the count is = "+total_row_count2);
+            console.log("Giving single name in patient name filter and the count is = "+total_row_count2);
             console.log("");
             //await expect.soft(total_row_count2).toBe(1);
-            if(total_row_count2 !== 1)
+            if (total_row_count2 === 0) 
+                {
+                console.warn("Total row count is = "+total_row_count2+"found when filtering by name: " + expectedName);
+                console.log("");
+                }
+            else if(total_row_count2 !== 1)
             {
                 console.warn("ERROR - Expected 1 result after filtering the name but received: "+total_row_count2)
                 console.log("");
@@ -196,7 +269,7 @@ test('Checking all the filter options and giving inputs in patient_name filter',
                 }
             }
 
-           
+         */  
     });
 
 

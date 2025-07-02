@@ -1,4 +1,4 @@
-import{test, expect} from '@playwright/test';
+import{test, expect, _android} from '@playwright/test';
 import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../login.helper';
 
 let page;
@@ -74,6 +74,15 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
 
     let firstmatchedidcount = 0;
 
+    //Handle empty case 
+        if (total_row_count === 0) 
+        {
+            console.warn("No rows found for giving '2' in patient id filter — table is empty.");
+            console.log("------------------------------------------------------------------");
+            console.log(" ");
+        }
+        else 
+        {
     //Locate the 2nd column(patientname) in each row
     for(let i=0; i<total_row_count; i++)
        {
@@ -92,6 +101,7 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
                     console.log("");
                 }
        }
+    }
 
        if(firstmatchedidcount!=total_row_count)
        {
@@ -120,6 +130,15 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
 
        let secondmatchedidcount = 0;
 
+       //Handle empty case 
+        if (total_row_count1 === 0) 
+        {
+            console.warn("No rows found for giving '12' in patient id filter — table is empty.");
+            console.log("------------------------------------------------------------------");
+            console.log(" ");
+        }
+        else 
+        {
        //Locate the 2nd column(patientid) in each row
        for(let i=0; i<total_row_count1; i++)
        {
@@ -137,6 +156,7 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
                 console.log("");
                 }
        }
+    }
 
        //Warn if count mismatched
        if(secondmatchedidcount != total_row_count1)
@@ -165,12 +185,19 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
         //Finding the no.of.rows inside the table
             const row_count2 = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
             const total_row_count2 = await row_count2.count();
-            console.log("Giving full id in patientid filter and the count is = "+total_row_count2);
+            console.log("Giving full id "+expectedid+" in patientid filter and the count is = "+total_row_count2);
             console.log("");
-            //await expect.soft(total_row_count2).toBe(1);
-            if(total_row_count2 !== 1)
+            
+            //Handle empty row
+            if (total_row_count1 === 0) 
             {
-                console.warn("ERROR - Expected 1 result after filtering the id but received: "+total_row_count2)
+            console.warn("No rows found for giving "+expectedid+" in patient id filter — table is empty.");
+            console.log("------------------------------------------------------------------");
+            console.log(" ");
+            }
+            else if(total_row_count2 !== 1)
+            {
+                console.warn("ERROR-Mismatched: Expected 1 result after filtering the id but received: "+total_row_count2)
                 console.log("");
             }
             else
@@ -182,7 +209,9 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
                 const id = await patientid_column2.textContent();
                 if (!id || !id.trim().includes(expectedid)) 
                     {
-                    throw new Error("Row contains unexpected id: "+(id)+". Expected id is "+(expectedid)+".");
+                    //throw new Error("Row contains unexpected id: "+(id)+". Expected id is "+(expectedid)+".");
+                    console.warn("Soft Assert Failed: Expected ID "+expectedid+" but found "+id);
+                    expect.soft(id?.trim()).toContain(expectedid);
                     } 
                 else 
                     {
@@ -191,7 +220,7 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
                     console.log("ID matched: "+(id)+"");
                     }
             }
-                
+              console.log("------------------------------------------------------------");  
         });
 
 

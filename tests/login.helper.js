@@ -42,6 +42,7 @@ exports.invaildlogin = async function (page) {
         await expect(page.locator('.login-form')).toBeVisible();
         console.log('Unable to Login - Invaild Password');
         console.log('');
+        await page.waitForTimeout(2000);
         
         //Login with invalid email and password and check it show as error
         await page.locator('//input[@name="email"]').fill('nivi123@gmail.com');
