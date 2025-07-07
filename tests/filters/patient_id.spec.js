@@ -1,5 +1,5 @@
 import{test, expect, _android} from '@playwright/test';
-import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../login.helper';
+import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{

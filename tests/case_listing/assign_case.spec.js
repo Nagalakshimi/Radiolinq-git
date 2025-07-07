@@ -13,7 +13,7 @@ exports.assigncases = async function (page) {
             console.log("No.of cases present in the row = "+total_row_count);
             console.log(" ");
 
-        //Scroll the table to view and access the assign case button
+        //Scroll the table to view action column and access the assign case button
         await patient_detail_table.evaluate(el => el.scrollLeft = el.scrollWidth);
     
         //Handle empty case 
@@ -26,7 +26,7 @@ exports.assigncases = async function (page) {
             else    
             {
         // List of doctors to assign in round-robin
-        const doctors = ['Doctor Testing', 'Hemanath Dr'];
+        const doctors = ['Doctor Testing', 'Dr Hemanath'];
         let doctorIndex = 0;
 
         for (let i = 0; i < total_row_count; i++) 
@@ -50,7 +50,8 @@ exports.assigncases = async function (page) {
       console.log("Clicked Assign icon for Row "+(i + 1));
 
       // Select doctor
-      const doctorDropdownTrigger = page.locator('//div[@class="ant-select ant-select-single ant-select-show-arrow ant-select-show-search"]');////span[@class="ant-select-selection-search"]//input[@id="rc_select_30"] //span[contains(text(), "Select Doctor")]
+      //const doctorDropdownTrigger = page.locator('//div[@class="ant-select ant-select-single ant-select-show-arrow ant-select-show-search"]');////span[@class="ant-select-selection-search"]//input[@id="rc_select_30"] //span[contains(text(), "Select Doctor")]
+      const doctorDropdownTrigger = page.locator('//div[@class="ant-select ant-select-single ant-select-show-arrow ant-select-show-search" and .//span[text()="Select Doctor"]]');
       await doctorDropdownTrigger.click();
       console.log("Opened doctor dropdown");
 
@@ -65,7 +66,7 @@ exports.assigncases = async function (page) {
       console.log("------------------------------------------------------------");
 
       await page.waitForTimeout(1000); // Optional: allow time for UI update
-      await page.locator('//div[contains(text(), "Due Time")]').click();
+      await page.locator('//div[contains(text(), "Due Time")]').click(); //After assign it's does'nt auto close so click on random place
     }
   }
             }

@@ -1,5 +1,5 @@
 import{test, expect} from '@playwright/test';
-import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../login.helper';
+import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -56,7 +56,7 @@ test('Checking all the filter options and giving inputs in bodypart filter', asy
         await expect(filter_option.nth(i)).toBeVisible();
     }
 
-    //Click the 3rd filter - bodypart and check the dropdown is visible
+    //Click the 4th filter - bodypart and check the dropdown is visible
     const Bodypartfilter = await (filter_option.nth(3));
     await Bodypartfilter.click();
 

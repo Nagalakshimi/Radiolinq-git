@@ -1,5 +1,5 @@
 import{test, expect} from '@playwright/test';
-import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../login.helper';
+import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -42,7 +42,7 @@ test('Checking patient detail table is visible', async()=>{
 });
 
 test('Checking scancenter option is visible inside the table', async()=>{
-    //Verify to have study option inside the table
+    //Verify to have scancenter option inside the table
     const scancenter = await page.locator('//thead[@class="ant-table-thead"]//th[5]//div[contains(text(),"Scan Center")]');
     await expect(scancenter).toBeVisible();
 });
@@ -56,7 +56,7 @@ test('Checking all the filter options and giving inputs in scancenter filter', a
         await expect(filter_option.nth(i)).toBeVisible();
     }
 
-    //Click the 3rd filter - Scantype and check the dropdown is visible
+    //Click the 5th filter - Scancenter and check the dropdown is visible
     const Scancenterfilter = await (filter_option.nth(4));
     await Scancenterfilter.click();
     
