@@ -13,7 +13,7 @@ exports.assigncases = async function (page) {
             console.log("No.of cases present in the row = "+total_row_count);
             console.log(" ");
 
-        //Scroll the table to view action column and access the assign case button
+        //Scroll the table right to view action column and access the assign case button
         await patient_detail_table.evaluate(el => el.scrollLeft = el.scrollWidth);
     
         //Handle empty case 
@@ -72,31 +72,7 @@ exports.assigncases = async function (page) {
             }
         }
 
-        /*
-        // Click on the assign button
-        const assigncase_button = await page.locator('(//span[@aria-label="user-add"])[1]');
-        await assigncase_button.click();
-        console.log("Clicked assign button for row "+(i + 1));
-
-        //Click the Select doctor dropdown
-        await page.locator('//span[contains(text(), "Select Doctor")]').click();
-        console.log("Opened doctor dropdown for row "+(i + 1));
-
-        // Wait for dropdown
-        const doctor_dropdown = page.locator('//div[contains(@class,"ant-select-dropdown") and not(contains(@class,"hidden"))]');
-        await expect(doctor_dropdown).toBeVisible();
-
-        // Select the doctor by name
-        await doctor_dropdown.getByText(doctorToAssign, { exact: true }).click();
-
-        // Click Assign button
-        const assign_button = page.locator('//button//span[contains(text(), "Assign")]');
-        await assign_button.click();
-
-        console.log("Assigned to "+doctorToAssign);
-        await page.waitForTimeout(1000); // wait for UI update if necessary
-         }
-    }
-            }
-    */
+        
+    
+    
         
