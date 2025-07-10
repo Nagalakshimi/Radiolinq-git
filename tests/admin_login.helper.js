@@ -5,6 +5,7 @@ const{ expect } = require('@playwright/test');
 exports.url = async function (page) {
 
         await page.goto('https://staging.radiolinq.com/');
+
         //Checking the image is visible in login page
             await expect.soft(page.getByAltText('Radiolinq Login')).toBeVisible();
                 

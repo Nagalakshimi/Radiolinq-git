@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { Console } from 'console';
 import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
-
+import { choosedate } from '../choosedate.spec';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -17,6 +17,10 @@ test.beforeAll('Login using URL', async({browser})=>{
 
    //Checking the cases text is visible inside the admin dashboard
     await checking_ifsuccessfully_loginintothedashbaord(page);
+
+    //Selecting From date and To date for getting case
+    await choosedate(page);
+    
 
     //Selecting 50/page
     await page.locator('(//div[@class="ant-select-selector"])[7]').click();
