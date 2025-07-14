@@ -4,7 +4,13 @@ const{ expect } = require('@playwright/test');
 exports.choosedate = async function (page) {
 
 // Click on From Date
-    await page.locator('//input[@name="fromDate"]').click();
+     const fromdate_locator = await page.locator('//input[@name="fromDate"]');
+     await expect(fromdate_locator).toBeVisible();
+     await fromdate_locator.click();
+
+    //Click year selector and choose 2025
+    await page.locator('(//div[@class="ant-picker-header-view"])[1]//button[@class="ant-picker-year-btn"]').click();
+    await page.locator('//td//div[contains(text(),"2025")]').click();
 
     // Click month selector and choose May
     await page.locator('(//div[@class="ant-picker-header-view"])[1]//button[@class="ant-picker-month-btn"]').click();
@@ -21,7 +27,9 @@ exports.choosedate = async function (page) {
     console.log("From Date selected: 07-Jul-2025");
 
     // Click on To Date
-    await page.locator('//input[@name="toDate"]').click();
+    const todate_locator = await page.locator('//input[@name="toDate"]');
+    await expect(todate_locator).toBeVisible();
+    await todate_locator.click();
     await page.waitForTimeout(500);
 
     // Choose July

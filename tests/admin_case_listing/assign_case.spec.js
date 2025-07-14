@@ -61,6 +61,7 @@ exports.assigncases = async function (page) {
 
       // Click final Assign button
       const confirmAssignButton = page.locator('//button//span[contains(text(), "Assign")]');
+      await expect(confirmAssignButton).toBeVisible();
       await confirmAssignButton.click();
       console.log("Successfully assigned Row "+(i + 1)+" to "+doctorToAssign);
       console.log("------------------------------------------------------------");

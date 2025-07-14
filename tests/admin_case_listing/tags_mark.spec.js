@@ -31,17 +31,21 @@ exports.tagsMark = async function (page) {
     const tagCell = currentRow.locator('td').nth(0);
     const tagBox = tagCell.locator('.admin-cases__tags');
 
-    const tagItem = tagBox.locator('.admin-cases__tag-item');
-    const isTagged = await tagItem.count() > 0;
-
-    console.log(`Row ${i + 1}: Is tagged? ${isTagged}`);
+    const tagItems = tagBox.locator('.admin-cases__tag-item');
+    // const isTagged = await tagItem.count() > 0;
+        const tagCount   = await tagItems.count();
+        const isTagged = tagCount > 0;
+        console.log(`Row ${i + 1}: Is tagged? ${isTagged}`);
 
     if (isTagged) {
+
+/*
     // Get the tag color
     let tagColor = await tagItem.evaluate(el =>
     window.getComputedStyle(el).getPropertyValue('background-color')
     );
     tagColor = tagColor.replace(/\s+/g, '').toLowerCase();
+*/
 
     // Map known colors to tag names
     const tagColorMap = {
@@ -51,13 +55,33 @@ exports.tagsMark = async function (page) {
         'rgb(50,205,50)': 'case opened',
     };
 
+      let tagNames = [];
+
+      for (let j = 0; j < tagCount; j++) {
+        const tagItem = tagItems.nth(j);
+        let tagColor = await tagItem.evaluate(el =>
+          window.getComputedStyle(el).getPropertyValue('background-color')
+        );
+
+        tagColor = tagColor.replace(/\s+/g, '').toLowerCase(); // clean whitespace
+        const tagName = tagColorMap[tagColor] || 'unknown';
+        tagNames.push(tagName);
+      }
+
+      console.log(`Row ${i + 1}: Tags already present — [${tagNames.join(', ')}] — Skipping`);
+      console.log('');
+      continue;
+    }
+
+
+/*
     const tagName = tagColorMap[tagColor] || 'unknown';
 
     console.log("Row" +(i + 1)+": Tag already present — ["+tagName+"] — Skipping");
     console.log('');
     continue;
     }
-
+*/
     // Round-robin tag assignment
     const tagToAssign = tags[tagIndex % tags.length];
     tagIndex++;
