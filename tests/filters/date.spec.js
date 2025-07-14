@@ -12,11 +12,7 @@ test.beforeAll('Login using URL', async({browser})=>{
 
     //Checking the cases text is visible inside the admin dashboard
     await checking_ifsuccessfully_loginintothedashbaord(page);
-/*
-    //Selecting 50/page
-    await page.locator('(//div[@class="ant-select-selector"])[7]').click();
-    await page.locator('//div[contains(text(), "50 / page")]').click();
-*/
+
 });   
 
 test.afterAll('Logout from the application', async()=>{

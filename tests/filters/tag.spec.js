@@ -1,6 +1,6 @@
 import{test, expect} from '@playwright/test';
 import { url, invaildlogin, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
-import { tagsMark } from '../case_listing/tags_mark.spec';
+import { tagsMark } from '../admin_case_listing/tags_mark.spec';
 import { choosedate } from '../choosedate.spec';
 
 let page;
