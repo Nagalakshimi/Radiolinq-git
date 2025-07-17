@@ -10,5 +10,9 @@
   "devDependencies": {
     "@playwright/test": "^1.53.1",
     "@types/node": "^22.15.18"
+  },
+  "dependencies": {
+    "pdf-parse": "^1.1.1",
+    "string-similarity": "^4.0.4"
   }
 }

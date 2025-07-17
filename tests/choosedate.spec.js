@@ -12,7 +12,7 @@ exports.choosedate = async function (page) {
     await page.locator('(//div[@class="ant-picker-header-view"])[1]//button[@class="ant-picker-year-btn"]').click();
     await page.locator('//td//div[contains(text(),"2025")]').click();
 
-    // Click month selector and choose May
+    // Click month selector and choose Jul
     await page.locator('(//div[@class="ant-picker-header-view"])[1]//button[@class="ant-picker-month-btn"]').click();
     await page.locator('//td//div[contains(text(),"Jul")]').click();
 

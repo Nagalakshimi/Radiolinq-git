@@ -1,7 +1,9 @@
 import {test, expect} from '@playwright/test'
 import { url, vaildlogin, logout, checking_ifsuccessfully_loginintothedashbaord } from '../admin_login.helper';
 import { choosedate } from '../choosedate.spec';
-
+import { edit } from './edit.spec';
+import { morecase_details } from './morecase_details.spec';
+import { generatereport } from './generate_report.spec';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -24,11 +26,12 @@ test.beforeAll('Login using URL', async({browser})=>{
 
 });   
 
+/*
 test.afterAll('Logout from the application', async()=>{
     //calling the logout function
     await logout(page);
 });
-
+*/
 test('Checking the case listing table is visible', async()=>{
     //Check the Patient details table is visible
         const patient_detail_table = page.locator('.ant-table-container');
@@ -36,6 +39,7 @@ test('Checking the case listing table is visible', async()=>{
 });
     
 test('Counting the number of cases and do self-assign action', async()=>{
+    
     //Finding the no.of.rows inside the table                           
         const row_count = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
         const total_row_count = await row_count.count();
@@ -87,7 +91,10 @@ test('Counting the number of cases and do self-assign action', async()=>{
       await confirmAssignButton.click();
       console.log("Successfully Self-assigned Row " + (i + 1) + ".");
       console.log(" ");
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
+      const assigned_notification = await page.locator('//div[contains(text(),"Case has been assigned to you!")]');
+      await expect.soft(assigned_notification).toBeVisible();
+      await page.waitForTimeout(500);
 
       // Click elsewhere to close assign dialog
       await page.locator('//div[contains(text(), "Due Time")]').click();
@@ -113,7 +120,30 @@ test('Counting the number of cases and do self-assign action', async()=>{
       console.warn("No cases were assigned.");
     }
   }
+
+/*
+  //Clicking on the First row
+  await row_count.nth(0).click();
+  console.log('Opening the first case');
+  console.log(" ");
+  */
 });
+
+test('Clicking the Edit button and perform edit actions', async()=>{
+    //Calling "Edit" function
+    await edit(page);
+});
+
+test('Clicking the More case details button and get the value and compare with edit inputs whether the values are same', async()=>{
+    //Calling "More case detail" function
+    await morecase_details(page);
+});
+
+test('Clicking the Generate report button and perform reporting actions', async()=>{
+    //Calling "Generate Report" function
+    await generatereport(page);
+});
+
 
 
 
