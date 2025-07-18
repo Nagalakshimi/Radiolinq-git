@@ -149,11 +149,14 @@ exports.generatereport = async function (page)
 
     // Final assertion
     expect.soft(yellowCount).toBeGreaterThan(0);
-    }
 
     //Clicking "Save Report" button
     await Savereport_btn.click();
     console.log("Clicked Save Report button.");
+    console.log("-----------------------------------------");
+    }
+
+    
     //await page.waitForTimeout(2000);
 
     //Check "Report Created" button should be visible
@@ -173,16 +176,23 @@ exports.generatereport = async function (page)
     // Start listening for PDF responses
     page.on('response', async (response) => {
     const url = response.url();
-    const contentType = response.headers()['content-type'];
+    const contentType = response.headers()['content-type']; //File Types like html,json,pdf..
 
     if (contentType?.includes('application/pdf')) {
     console.log('Found PDF at:', url);
+    console.log(" ");
     pdfBuffer = await response.body();
     }
     });
 
     //Click the Preview PDF button (that opens the new tab)
-    await previewPDF_btn.click();
+    //await previewPDF_btn.click();
+    const [pdfPage] = await Promise.all([
+    page.context().waitForEvent('page'),
+    previewPDF_btn.click()
+    ]);
+
+    await pdfPage.waitForLoadState();
 
     //Give it some time to load
     await page.waitForTimeout(3000);
@@ -190,6 +200,7 @@ exports.generatereport = async function (page)
     //Check if PDF was captured
     if (!pdfBuffer) {
     throw new Error("PDF buffer not captured. Check if content-type was PDF or delay needed.");
+    console.log(" ");
     }
 
     // Parse and assert PDF content
@@ -200,12 +211,23 @@ exports.generatereport = async function (page)
 
     //Compare PDF content with contentToCompare(updated/original content)
     const contentToCompare = updatedContent || originalContent;
+
+    if(updatedContent)
+    {
+        console.log("Using 'Updated content' for comparision.");
+        console.log(" ");
+    }
+    else
+    {
+        console.log("Using 'Original content' for comparision.");
+        console.log(" ");
+    }
     
     //Normalize PDF and Expected content
     const normalizeText = (text) => {
     return text
-    .replace(/[\r\n]+/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/[\r\n]+/g, ' ') // Replace newlines with spaces
+    .replace(/\s+/g, ' ')     // Collapse multiple spaces into one
     .replace(/[^\w\s]/g, '')  // Remove punctuation
     .trim()
     .toLowerCase();
@@ -213,7 +235,8 @@ exports.generatereport = async function (page)
 
     const pdfNormalized = normalizeText(pdfText);
     const expectedNormalized = normalizeText(contentToCompare);
-    console.log("Using content for comparison:\n", contentToCompare);
+    //console.log("Using content for comparison:\n", contentToCompare); //content inside init
+    //console.log(" ");
 
     //Fuzzy comparison
     const similarity = stringSimilarity.compareTwoStrings(pdfNormalized, expectedNormalized);
@@ -233,7 +256,10 @@ exports.generatereport = async function (page)
         console.log("---------------------------------------------");
     }
 
-    
+    //Close the PDF tab
+    await pdfPage.close();
+    console.log("Closing the PDF tab");
+    console.log("--------------------------------------------------");
 
     //"Save and Publish Report" button should be visible
     const publishreport_btn = await page.locator('//span[contains(text(),"Save & Publish Report")]');

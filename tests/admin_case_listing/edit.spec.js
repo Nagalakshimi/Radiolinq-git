@@ -116,26 +116,29 @@ exports.edit = async function (page)
     */
    const fileAttached = await page.locator('//div[@class="ant-col ant-col-6 attachment-upload__img-wrapper"]').isVisible();
 
-if (fileAttached) {
-  console.log('File Already attached');
-} else {
-  console.log('No attachment found. Uploading now...');
+    if (fileAttached) 
+    {
+    console.log('File Already attached');
+    }   
+    else 
+    {
+    console.log('No attachment found. Uploading now...');
 
-  // Trigger file chooser
-  const [fileChooser] = await Promise.all([
+    // Trigger file chooser
+    const [fileChooser] = await Promise.all([
     page.waitForEvent('filechooser'),
     page.click('//div[@class="attachment-upload__input"]')
   ]);
 
-  // Set the file path
-  const path = require('path');
-  const filePath = path.resolve('C:/Users/nagalakshimi/Downloads/radiolinq-screenshot (8).jpeg');
+    // Set the file path
+    const path = require('path');
+    const filePath = path.resolve('C:/Users/nagalakshimi/Downloads/radiolinq-screenshot (8).jpeg');
 
-  // Upload the file
-  await fileChooser.setFiles(filePath);
-  await page.waitForTimeout(2000);
+    // Upload the file
+    await fileChooser.setFiles(filePath);
+    await page.waitForTimeout(2000);
 
-  console.log('File uploaded successfully.');
+    console.log('File uploaded successfully.');
 
 }
     //Click on "Update" button
