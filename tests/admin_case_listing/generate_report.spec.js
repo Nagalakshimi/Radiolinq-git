@@ -1,6 +1,8 @@
 const { expect } = require('@playwright/test');
 const pdfParse = require('pdf-parse');
 const stringSimilarity = require('string-similarity');
+const path = require('path');
+const fs = require('fs');
 
 
 exports.generatereport = async function (page) 
@@ -267,6 +269,41 @@ exports.generatereport = async function (page)
     await publishreport_btn.click();
     console.log("Save and Publish button clicked");
     console.log(" ");
+    await page.waitForTimeout(2000);
+
+    //Checking "Download" button is visible and Click it
+    const Download_btn = await page.locator('//button[contains(text(),"Download")]');
+    await expect.soft(Download_btn).toBeVisible();
+    await Download_btn.click();
+
+    //Checking "Download options" is visible('Download with letterhead', 'Download without letterhead', 'Download as word' )
+    const download_options = await page.locator('.ant-popover-inner-content');
+    await expect.soft(download_options).toBeVisible();
+
+    // Define download options text
+    const downloadOptions = [
+    //'Download with Letterhead',
+    //'Download without Letterhead',
+    'Download as Word'
+  ];
+
+    //Wait for the download options to start when clicking the buttons
+    for (const optionText of downloadOptions) {
+    const [download] = await Promise.all([
+    page.waitForEvent('download'),
+    page.click(`text=${optionText}`) // Clicks the item with matching visible text
+    ]);
+
+    const suggestedName = await download.suggestedFilename();
+    const downloadPath = path.join(__dirname, 'downloads', suggestedName);
+    await download.saveAs(downloadPath);
+
+    const fileExists = fs.existsSync(downloadPath);
+    await expect.soft(fileExists).toBeTruthy();
+
+    console.log("Downloaded: "+(optionText)+" as "+suggestedName);
+  }
+
 
 
 }

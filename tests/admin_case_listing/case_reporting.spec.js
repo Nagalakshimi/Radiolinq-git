@@ -4,6 +4,7 @@ import { choosedate } from '../choosedate.spec';
 import { edit } from './edit.spec';
 import { morecase_details } from './morecase_details.spec';
 import { generatereport } from './generate_report.spec';
+import { downloadCase, downloadReport } from './downloads.spec';
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -38,7 +39,8 @@ test('Checking the case listing table is visible', async()=>{
         await expect(patient_detail_table).toBeVisible();
 });
     
-test('Counting the number of cases and do self-assign action', async()=>{
+    //Self-Assigning the cases
+test.skip('Counting the number of cases and do self-assign action', async()=>{
     
     //Finding the no.of.rows inside the table                           
         const row_count = page.locator('//div[@class="ant-table-body"]//tr[@class="ant-table-row ant-table-row-level-0 cursor-pointer"]');
@@ -121,27 +123,37 @@ test('Counting the number of cases and do self-assign action', async()=>{
     }
   }
 
-/*
-  //Clicking on the First row
-  await row_count.nth(0).click();
-  console.log('Opening the first case');
-  console.log(" ");
-  */
 });
 
-test('Clicking the Edit button and perform edit actions', async()=>{
-    //Calling "Edit" function
+    //Editing the case in Row 1
+test.skip('Clicking the Edit button and perform edit actions', async()=>{
+    //Calling "edit" function
     await edit(page);
 });
 
-test('Clicking the More case details button and get the value and compare with edit inputs whether the values are same', async()=>{
-    //Calling "More case detail" function
+    //View Row 1 "More case details" and compare the Values in Edit
+test.skip('Clicking the More case details button and get the value and compare with edit inputs whether the values are same', async()=>{
+    //Calling "morecase_details" function
     await morecase_details(page);
 });
 
-test('Clicking the Generate report button and perform reporting actions', async()=>{
-    //Calling "Generate Report" function
+    //Generate the Report in Row 1
+test.skip('Clicking the Generate report button and perform reporting actions', async()=>{
+    //Calling "generate_report" function
     await generatereport(page);
+});
+
+    //Download the First case
+test('Download the case', async()=>{
+    //Calling the "Download Case" function
+    await downloadCase(page);
+
+});
+
+    //Download the First Reports
+test("Download the Report",async()=>{
+    //Calling the "Download Report" function
+    await downloadReport(page);
 });
 
 
