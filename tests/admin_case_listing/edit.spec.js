@@ -4,8 +4,8 @@ const { expect } = require('@playwright/test');
 exports.edit = async function (page) 
 {
     //Clicking on the First row to open an edit option
-    const first_row_edit = await page.locator('//div[@class="ant-table-body"]//tr[2]');
-    const editBtn = await first_row_edit.locator('//button[2]').click();
+    //const first_row_edit = await page.locator('//div[@class="ant-table-body"]//tr[2]');
+    const editBtn = await page.locator('(//button//span[@aria-label = "edit"])[1]').click();
 
     //Asserting after clicking Edit button "Edit case" text is visible in case form
     const EditCase_text = await page.locator('//div[@class="case-form"]//h2[contains(text(),"Edit Case")]');

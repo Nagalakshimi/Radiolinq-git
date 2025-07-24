@@ -89,7 +89,8 @@ test('Checking all the filter options and giving inputs in status filter', async
 
     // Check if next page is available
     const nextButton = page.locator('.ant-pagination-next:not(.ant-pagination-disabled)');
-    if (await nextButton.isVisible()) {
+    if (await nextButton.isVisible()) 
+    {
       await nextButton.click();
       await page.waitForTimeout(1000);
       pageIndex++;
@@ -145,8 +146,8 @@ test('Checking all the filter options and giving inputs in status filter', async
     await expect(option).toBeVisible();
     await option.click();
 
-    // Wait for table to reload (use better wait logic if needed)
-    await page.waitForTimeout(1500);
+    // Wait for table to reload 
+    await page.waitForTimeout(1000);
 
     // Count filtered rows
     const filtered = await countRowsAcrossPages(page, status);

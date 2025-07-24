@@ -5,23 +5,23 @@ const fs = require('fs');
 // ============== DOWNLOAD REPORT =================
 exports.downloadReport = async function (page) 
 {
-    // Step 2: Ensure the downloads folder exists
+    // Step 1: Ensure the downloads folder exists
     const downloadDir = path.join(__dirname, 'downloads');
     if (!fs.existsSync(downloadDir)) 
     {
     fs.mkdirSync(downloadDir);
     }
 
-    // Step 3: Click the main "Download Report" button
+    // Step 2: Click the main "Download Report" button
     const downloadReportBtn = page.locator('(//button//span[@aria-label = "download"])[1]'); //Clicking on donwload report in first row
     await expect.soft(downloadReportBtn).toBeVisible();
     await downloadReportBtn.click();
 
-    // Step 4: Ensure options are visible
+    // Step 3: Ensure options are visible
     const downloadMenu = page.locator('.ant-popover-inner-content'); 
     await expect.soft(downloadMenu).toBeVisible();
 
-    // Step 5: Loop through each download option
+    // Step 4: Loop through each download option
     const downloadOptions = [
     //'Download with Letterhead',
     //'Download without Letterhead',

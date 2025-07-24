@@ -5,9 +5,9 @@ const { Console } = require('console');
 exports.morecase_details = async function (page) 
 {
 
-    //Clicking on the First row to open an "More case detail" option
-    const first_row = await page.locator('//div[@class="ant-table-body"]//tr[2]');
-    const morecasedetails_btn = await first_row.locator('//button[6]');
+    //Clicking on the First row "More case detail" option
+    //const first_row = await page.locator('//div[@class="ant-table-body"]//tr[2]');
+    const morecasedetails_btn = await page.locator('(//button//span[@aria-label = "ellipsis"])[1]');
     await expect.soft(morecasedetails_btn).toBeVisible();
     await morecasedetails_btn.click();
 

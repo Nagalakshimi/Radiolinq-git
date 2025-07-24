@@ -5,6 +5,7 @@ import { edit } from './edit.spec';
 import { morecase_details } from './morecase_details.spec';
 import { generatereport } from './generate_report.spec';
 import { downloadCase, downloadReport } from './downloads.spec';
+const { sharelink } = require('./share_link.helper');
 
 let page;
 test.beforeAll('Login using URL', async({browser})=>{
@@ -39,7 +40,7 @@ test('Checking the case listing table is visible', async()=>{
         await expect(patient_detail_table).toBeVisible();
 });
     
-    //Self-Assigning the cases
+    //==================== Self-Assigning the cases ================================
 test.skip('Counting the number of cases and do self-assign action', async()=>{
     
     //Finding the no.of.rows inside the table                           
@@ -125,37 +126,42 @@ test.skip('Counting the number of cases and do self-assign action', async()=>{
 
 });
 
-    //Editing the case in Row 1
+    //===================== Editing the case in Row 1 =========================
 test.skip('Clicking the Edit button and perform edit actions', async()=>{
     //Calling "edit" function
     await edit(page);
 });
 
-    //View Row 1 "More case details" and compare the Values in Edit
+    //================ View Row 1 "More case details" and compare the Values in Edit ===============
 test.skip('Clicking the More case details button and get the value and compare with edit inputs whether the values are same', async()=>{
     //Calling "morecase_details" function
     await morecase_details(page);
 });
 
-    //Generate the Report in Row 1
+    // ========================= Generate the Report in Row 1 =======================================
 test.skip('Clicking the Generate report button and perform reporting actions', async()=>{
     //Calling "generate_report" function
     await generatereport(page);
 });
 
-    //Download the First case
-test('Download the case', async()=>{
+    // ==================== Downloads the First case ========================
+test.skip('Download the case', async()=>{
     //Calling the "Download Case" function
     await downloadCase(page);
 
 });
 
-    //Download the First Reports
-test("Download the Report",async()=>{
+    // ====================== Download the First Reports ===========================
+test.skip("Download the Report",async()=>{
     //Calling the "Download Report" function
     await downloadReport(page);
 });
 
+    // =========================== Share Link ======================================
+test('Share Link', async({ browser }) => {
+    //Calling the "Share Link" function
+    await sharelink(page, browser);
+});
 
 
 

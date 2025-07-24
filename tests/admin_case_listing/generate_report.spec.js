@@ -7,9 +7,9 @@ const fs = require('fs');
 
 exports.generatereport = async function (page) 
 {
-    //Clicking on the First row to open an "More case detail" option
-    const first_row = await page.locator('//div[@class="ant-table-body"]//tr[2]');
-    const generatereport_btn = await first_row.locator('//button[3]');
+    //Clicking on the First row  "Generate report" option
+    //const first_row = await page.locator('//div[@class="ant-table-body"]//tr[2]');
+    const generatereport_btn = await page.locator('(//button//span[@aria-label = "form"])[1]');
     await expect.soft(generatereport_btn).toBeVisible();
     await generatereport_btn.click();
 
