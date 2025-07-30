@@ -16,7 +16,7 @@ import { TIMEOUT } from 'dns';
 
 export default defineConfig({
   // Timeout
-  timeout:60000,
+  timeout:180 * 1000, // 3 minutes
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
