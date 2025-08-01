@@ -1,4 +1,5 @@
 import{test, expect} from '@playwright/test';
+import { choosedate } from '../helper/choosedate.helper';
 
 exports.datefilters = async function (page) {
   
@@ -171,4 +172,9 @@ exports.datefilters = async function (page) {
     await expect.soft(Selecteddate).toBeVisible();
     console.log('');
     console.log("From date '13-Nov-2024' is visible");
+    await page.waitForTimeout(2000);
+
+    //Calling choose date function to do further actions
+    await choosedate(page);
+
 }

@@ -3,8 +3,12 @@ const clipboardy = require('clipboardy'); //Installed clipboardy package
 
 exports.sharelink = async function (page, browser) 
 {
-
+    console.log('// ==================== Sharing the First case ========================\n');
     // 1. Make sure "Share link" button is visible and Click the button
+
+    await page.evaluate(() => {
+  window.scrollBy({ left: 500, behavior: 'smooth' }); // Scrolls right by 500 pixels
+});
 
     const sharelink_btn = page.locator('(//button//span[@aria-label = "share-alt"])[1]');
     await expect.soft(sharelink_btn).toBeVisible();
@@ -23,6 +27,7 @@ exports.sharelink = async function (page, browser)
     const copied_notification = await page.locator('//div[contains(text(),"Copied")]');
     await expect.soft(copied_notification).toBeVisible();
     await page.waitForTimeout(1000);
+    console.log("Copied notification is visible");
 
     // 4. Get the copied link from the clipboard
     /*

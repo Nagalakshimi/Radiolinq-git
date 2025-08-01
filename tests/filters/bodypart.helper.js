@@ -48,6 +48,7 @@ exports.bodypart = async function (page) {
         const moreDetailsButton = row.locator('.ant-btn span[aria-label="ellipsis"]');
         await expect.soft(moreDetailsButton).toBeVisible();
         await moreDetailsButton.click();
+        await page.waitForTimeout(1000);
 
         // Wait and get Bodypart field
         const bodypartElement = page.locator('//div[.//div[text()="Body parts"]]/div[@class="case-overview__value"]');

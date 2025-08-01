@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { navigateToLogin, invalidLoginChecks, login, verifyDashboard, logout } from '../authentication/auth.helper';
 import { choosedate } from '../helper/choosedate.helper';
 import {all_Filters} from '../filters/all_filters.helper';
+import { actionButtons } from '../admin_case_listing/Allaction_buttons.helper';
 let page;
 
 //Login to the admin
@@ -29,6 +30,7 @@ test.afterAll('Logout', async () => {
 
 //Selecting From date and To date for getting case
 test('Choose Date', async ()=>{
+    await page.waitForTimeout(1000);
     await choosedate(page);
 });
 
@@ -55,7 +57,13 @@ test('Checking all the filter options and giving inputs in patient_id filter', a
     }
 });
 
-//Using All Filter options
+//Executing All Filter options
 test('All Filter', async()=>{
-await all_Filters(page, { rundoctorOnly: true });
+await all_Filters(page);
+});
+
+//Executing Action Buttons
+test('Action Buttons', async({browser})=>{
+    await page.waitForTimeout(2000);
+    await actionButtons(page, browser);
 });

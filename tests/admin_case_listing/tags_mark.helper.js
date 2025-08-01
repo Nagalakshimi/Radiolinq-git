@@ -81,16 +81,16 @@ exports.tagsMark = async function (page) {
   }
 
 
-    // ✅ Click Previous button to go back one page
-    const prevButton = page.locator('.ant-pagination-prev:not(.ant-pagination-disabled)');
-    if (await prevButton.isVisible()) {
-    await prevButton.click();
+    // ✅ Click Page 1 button to go back first page
+    const page1_Button = page.locator('//ul[contains(@class,"ant-table-pagination")]//li[@class="ant-pagination-item ant-pagination-item-1"]');
+    if (await page1_Button.isVisible()) {
+    await page1_Button.click();
     await page.waitForTimeout(1000);
-    console.log('⬅️ Clicked Previous button to return to earlier page.');
+    console.log('⬅️ Clicked Page no.1 button to return first page.');
     } 
     else {
-    console.warn('⚠️ Previous button is disabled or not visible. Cannot go back.');
-    }
+    console.warn('⚠️ Page no.1 button is disabled or not visible. Cannot go back.');
+      }
 
   console.log("========== Tagging completed ==========");
 };

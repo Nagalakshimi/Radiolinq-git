@@ -1,5 +1,5 @@
 const {expect} = require('@playwright/test');
-import { downloadCase, downloadReport } from '../admin_case_listing/downloads.spec';
+import { downloadCase, downloadReport } from '../admin_case_listing/downloads.helper';
 
 exports.status = async function (page) {
 
@@ -150,7 +150,8 @@ exports.status = async function (page) {
     console.warn("Skipping download — No cases found for status '"+(status)+"'");
     console.log(" ");
     }   
-    else if (status.toLowerCase() === "reported") {
+    else if (filtered.matchedStatusCount > 0 && status.trim().toLowerCase() === "reported") {
+      //console.log("DEBUG: Filtered status is ->", statusText.trim().toLowerCase());
     console.log("Calling 'downloadReport' for Reported status...");
     console.log(" ");
     await downloadReport(page);
