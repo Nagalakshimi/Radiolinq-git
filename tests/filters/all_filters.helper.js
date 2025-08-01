@@ -1,4 +1,4 @@
-const {expert} = require('@playwright/test');
+const {expect} = require('@playwright/test');
 import { patientIdFilter } from '../filters/patient_id.helper';
 import { patientNameFilter } from '../filters/patient_name.helper';
 import { scantype } from '../filters/scantype.helper';
