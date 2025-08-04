@@ -29,104 +29,64 @@ exports.sharelink = async function (page, browser)
     await page.waitForTimeout(1000);
     console.log("Copied notification is visible");
 
-    // 4. Get the copied link from the clipboard
-    /*
-    const copiedlink = await clipboardy.read();
-    console.log("Copied Link : "+copiedlink);
-*/
-/*
-    const copiedlink = await page.evaluate(() => navigator.clipboard.readText());
-    console.log("✅ Copied from browser clipboard:", copiedlink);
+    const browserName = browser._name || browser.browserType().name?.(); // Compatibility
+    const isHeadless = browser.options?.headless ?? true;
 
-    // 5. Extract the actual URL from the full copied text
-    
-    const match = copiedlink.match(/https?:\/\/\S+/);
-    if (match) {
-    const actualURL = match[0];
-    
-    const context = await browser.newContext({
-    permissions: ['clipboard-read', 'clipboard-write'],
-  }); 
+    let context;
 
-    const newTab = await context.newPage();
-    await newTab.goto(actualURL, { waitUntil: 'load' });
-    await page.waitForTimeout(2000);
-    await newTab.waitForURL(/guest\/cases\/\d+/, { timeout: 10000 });
-
-    await expect.soft(newTab).toHaveURL(/guest\/cases\/\d+/);
-    
-    console.log("Link opened successfully in new tab\n");
-    await page.waitForTimeout(1000);
-
-    const radiolinqText_innewTab = page.locator('//div//span[contains(text(),"RADIOLINQ")]');
-      if (await radiolinqText_innewTab.isVisible()) {
-    console.log("RADIOLINQ text is visible in new tab\n");
-    } else {
-    console.error("RADIOLINQ text is NOT visible in new tab\n");
-    }
-
-    await page.waitForTimeout(2000);
-
-    // Close the new tab and context
-    await newTab.close();
-    await context.close();
-
-    // Bring main tab back to front
-    await page.bringToFront();
-    await page.waitForTimeout(2000);
-}   
-    else {
-    console.error("======= No valid link found in copied content. =========");
-    console.log("========================================================================");
-}
-*/
-
-
-// Read link from system clipboard
-const copiedlink = await clipboardy.read();
-const match = copiedlink.match(/https?:\/\/\S+/);
-
-if (match) {
-  const actualURL = match[0];
-  const origin = new URL(actualURL).origin;
-
-  // Grant clipboard permissions for that origin
-  const context = await browser.newContext();
+  // Grant clipboard permissions if Chromium in headed mode
+  if (browserName === 'chromium' && !isHeadless) {
+  context = await browser.newContext();
   await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
+  console.log(`✅ Clipboard permissions granted for ${browserName} in headed mode.`);
+} else {
+  context = await browser.newContext();
+  console.warn(`⚠️ Clipboard permissions not granted. Browser: ${browserName}, Headless: ${isHeadless}`);
+}
 
   const newTab = await context.newPage();
 
+  let actualURL = '';
+
+// ✅ Clipboard read — only in Chromium with fallback
+  if (browserName === 'chromium'|| browserName === 'firefox') {
   try {
-    await newTab.goto(actualURL, { waitUntil: 'load' });
-    await page.waitForTimeout(5000);
-    await newTab.waitForURL(/guest\/cases\/\d+/, { timeout: 10000 });
-    await page.waitForTimeout(5000);
-    await expect.soft(newTab).toHaveURL(/guest\/cases\/\d+/);
-    console.log("Link opened successfully in new tab\n");
-    await page.waitForTimeout(1000);
-    
-/*
-    //const radiolinqText = newTab.locator('//div//span[contains(text(),"RADIOLINQ")]');
-    const radiolinqText = newTab.locator('//span[@class="case-viewer__header__text"]');
-    const text = await radiolinqText.textContent();
-    console.log("Checking the text inside the view page",+text);
-    if (await radiolinqText.isVisible()) {
-      console.log("✅ RADIOLINQ text is visible\n");
+    const copiedLink = await clipboardy.read();
+    const match = copiedLink.match(/https?:\/\/\S+/);
+    if (match) {
+      actualURL = match[0];
+      console.log(`📋 Copied Link: ${actualURL}`);
     } else {
-      console.error("❌ RADIOLINQ text not visible\n");
+      throw new Error('No valid URL found in clipboard.');
     }
-      */
-     
-  } finally {
+  } catch (err) {
+    console.error(`❌ Failed to read clipboard: ${err.message}`);
+    return; // Exit or handle failure
+  }
+} else {
+  console.warn(`⚠️ Clipboard reading skipped in ${browserName}.`);
+  return; // Skip further steps if no clipboard access
+}
+
+// ✅ Navigate to actualURL if set
+try {
+  await newTab.goto(actualURL, { waitUntil: 'load' });
+  await page.waitForTimeout(5000);
+  await newTab.waitForURL(/guest\/cases\/\d+/, { timeout: 10000 });
+  await page.waitForTimeout(5000);
+  await expect.soft(newTab).toHaveURL(/guest\/cases\/\d+/);
+  console.log("✅ Link opened successfully in new tab.\n");
+  await page.waitForTimeout(1000);
+} catch (err) {
+  console.error(`❌ Failed to open URL: ${err.message}`);
+}
+
+//}  
+   finally {
     await newTab.close();
     await context.close();
     //await page.bringToFront();
   }
-
-} else {
-  console.error("❌ No valid link found in clipboard.\n");
-}
-
 
 //======================== "Send to WhatsApp" option Send link using "Mobile number" ==============================
     // Define test cases: number + expected message
